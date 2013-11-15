@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListView;
 
 public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
 	
@@ -99,22 +100,24 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View rootView = null;
-			int current = getActivity().getActionBar().getSelectedNavigationIndex();
+			FragmentActivity context = getActivity();
+			int current = context.getActionBar().getSelectedNavigationIndex();
 			switch (current) {
 			case 0: // INPUT
 				Log.d(LOG_TAG, "creating INPUT fragment");
 				rootView = inflater.inflate(R.layout.fragment_score_input, container, false);
 				GridView grid = (GridView)rootView.findViewById(R.id.inputGridView);
-				if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+				final boolean isPortrait = (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
+				if (isPortrait)
 					grid.setNumColumns(3);
 				else grid.setNumColumns(4);
 				for (int i=0; i < BUTTON_COUNT; i++) {
-					buttons[i] = new Button(getActivity());
+					buttons[i] = new Button(context);
 					buttons[i].setText(String.valueOf(10-i));
 				}
 				buttons[BUTTON_COUNT-1].setText("<");
 				BaseAdapter adapter = new BaseAdapter() {
-					// button position should depend on screen orientation/size
+					
 					@Override
 					public View getView(int position, View convertView, ViewGroup parent) {
 						return convertView==null ? buttons[orientedPosition(position)] : convertView;
@@ -135,9 +138,10 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 						return buttons.length;
 					}
 					
+					// button position should depend on screen orientation/size
 					private int orientedPosition(int pos) {
 						return 
-								getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
+								isPortrait ?
 										(pos%3)*4 + pos/3 : pos;
 					}
 				};
@@ -146,6 +150,8 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 			case 1: // HISTORY
 				rootView = inflater.inflate(R.layout.fragment_score_history, container, false);
 				Log.d(LOG_TAG, "creating HISTORY fragment");
+				ListView view = (ListView)rootView.findViewById(R.id.historyListView);
+				view.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, new String [] {"Nothing :("}));
 				// TODO
 				break;
 			}

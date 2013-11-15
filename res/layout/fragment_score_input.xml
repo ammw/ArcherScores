@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/seriesButton"
-        android:layout_below="@+id/scoreTotalTextView"
+        android:layout_below="@+id/finishButton"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:numColumns="auto_fit" >
@@ -28,14 +28,51 @@
         android:layout_alignRight="@+id/inputGridView"
         android:text="@string/submit" />
 
-    <TextView
-        android:id="@+id/scoreTotalTextView"
+    <HorizontalScrollView
+        android:id="@+id/resultsScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/inputGridView"
+        android:layout_alignParentTop="true" >
+
+        <LinearLayout
+            android:id="@+id/resultsInternalLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:id="@+id/seriesScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/inputGridView"
+        android:layout_alignTop="@+id/seriesButton" >
+
+        <LinearLayout
+            android:id="@+id/seriesInternalLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/finishButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/inputGridView"
-        android:text="@string/score_total" />
+        android:text="@string/score_close" />
 
-    
+    <TextView
+        android:id="@+id/scoreTotalTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/finishButton"
+        android:layout_alignBottom="@+id/finishButton"
+        android:layout_toLeftOf="@+id/finishButton"
+        android:text="@string/score_total" />
 
 </RelativeLayout>

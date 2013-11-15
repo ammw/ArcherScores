@@ -7,5 +7,6 @@
     <string name="title_section_history">History</string>
     <string name="score_total">"Total: "</string>
     <string name="submit">"Submit"</string>
+    <string name="score_close">End training</string>
 
 </resources>
