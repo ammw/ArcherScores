@@ -2,17 +2,23 @@ package eu.ammw.archerscores;
 
 
 import android.app.ActionBar;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.GridView;
 
 public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
-
+	
+	private static final String LOG_TAG = "AS-Main";
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * current dropdown position.
@@ -37,8 +43,8 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 						android.R.layout.simple_list_item_1,
 						android.R.id.text1,
 						new String[] {
-							getString(R.string.title_section_input),
-							getString(R.string.title_section_history),
+							getString(R.string.title_section_input),	// 0
+							getString(R.string.title_section_history),	// 1
 						}),
 						this);
 	}
@@ -82,13 +88,68 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 	 * A fragment representing a section of the app.
 	 */
 	public static class SectionFragment extends Fragment {
-
+		
+		private static final String LOG_TAG = "AS-Fr";
+		private static final int BUTTON_COUNT = 12;
+		private final Button [] buttons = new Button[BUTTON_COUNT];
+		
 		public SectionFragment() {
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_score_input, container, false);
+			View rootView = null;
+			int current = getActivity().getActionBar().getSelectedNavigationIndex();
+			switch (current) {
+			case 0: // INPUT
+				Log.d(LOG_TAG, "creating INPUT fragment");
+				rootView = inflater.inflate(R.layout.fragment_score_input, container, false);
+				GridView grid = (GridView)rootView.findViewById(R.id.inputGridView);
+				if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+					grid.setNumColumns(3);
+				else grid.setNumColumns(4);
+				for (int i=0; i < BUTTON_COUNT; i++) {
+					buttons[i] = new Button(getActivity());
+					buttons[i].setText(String.valueOf(10-i));
+				}
+				buttons[BUTTON_COUNT-1].setText("<");
+				BaseAdapter adapter = new BaseAdapter() {
+					// button position should depend on screen orientation/size
+					@Override
+					public View getView(int position, View convertView, ViewGroup parent) {
+						return convertView==null ? buttons[orientedPosition(position)] : convertView;
+					}
+					
+					@Override
+					public long getItemId(int position) {
+						return buttons[orientedPosition(position)].getId();
+					}
+					
+					@Override
+					public Object getItem(int position) {
+						return buttons[orientedPosition(position)];
+					}
+					
+					@Override
+					public int getCount() {
+						return buttons.length;
+					}
+					
+					private int orientedPosition(int pos) {
+						return 
+								getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
+										(pos%3)*4 + pos/3 : pos;
+					}
+				};
+				grid.setAdapter(adapter);
+				break;
+			case 1: // HISTORY
+				rootView = inflater.inflate(R.layout.fragment_score_history, container, false);
+				Log.d(LOG_TAG, "creating HISTORY fragment");
+				// TODO
+				break;
+			}
+			
 			return rootView;
 		}
 		
