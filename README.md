@@ -1,4 +1,5 @@
-archerscores
+Archer Scores
 ============
 
-nothing here for you (yet)
+A very simple Android application to count archery training results.
+
