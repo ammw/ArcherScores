@@ -1,13 +1,18 @@
 package eu.ammw.archerscores;
 
 
+import java.util.LinkedList;
+import java.util.List;
+
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -89,13 +94,24 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 	}
 	
 	public void onInputSeriesButtonClicked(View view) {
-		// TODO
 		Log.d(LOG_TAG, "series button clicked");
+		/* TODO: it should
+		 * put all scores from current series into current training data
+		 * clear the series view
+		 * create new series
+		 * update total field
+		*/
 	}
 	
 	public void onInputFinishButtonClicked(View view) {
-		// TODO
 		Log.d(LOG_TAG, "end training button clicked");
+		/* TODO: it should
+		 * do everything series button does
+		 * save result in the db
+		 * clear all training data
+		 * clear the input tab
+		 * set total to 0
+		 */
 	}
 
 	/**
@@ -111,13 +127,15 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 			{ Color.BLACK,  Color.BLACK, Color.WHITE, Color.WHITE, Color.BLACK, Color.BLACK };
 		private final Button [] buttons = new Button[BUTTON_COUNT];
 		
+		private static List<Integer> currentSeries = null;
+		
 		public SectionFragment() {
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View rootView = null;
-			FragmentActivity context = getActivity();
+			final FragmentActivity context = getActivity();
 			int current = context.getActionBar().getSelectedNavigationIndex();
 			switch (current) {
 			case 0: // INPUT
@@ -128,6 +146,22 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 				if (isPortrait)
 					grid.setNumColumns(3);
 				else grid.setNumColumns(4);
+				
+				// TODO series field
+				final LinearLayout seriesLayout = (LinearLayout)rootView.findViewById(R.id.seriesInternalLayout);
+				final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(seriesLayout.getLayoutParams());
+				params.setMargins(2, 2, 2, 2);
+				if(currentSeries != null) {
+					Log.d(LOG_TAG, "Restoring "+currentSeries.size()+" values");
+					for (Integer value : currentSeries)
+						seriesLayout.addView(textViewFromLabel(value.toString(), context), params);
+					currentSeries = null;
+				} else Log.d(LOG_TAG, "Nothing to restore in this series");
+				
+				// TODO training results field
+				LinearLayout trainingLayout = (LinearLayout)rootView.findViewById(R.id.resultsInternalLayout);
+				TextView dummy = textViewFromLabel("-1", context);
+				trainingLayout.addView(dummy, params);
 				for (int i=0; i < BUTTON_COUNT; i++) {
 					buttons[i] = new Button(context);
 					buttons[i].setText(String.valueOf(10-i));
@@ -135,8 +169,8 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 						
 						@Override
 						public void onClick(View v) {
-							// TODO
 							Log.d(LOG_TAG, "button "+((Button)v).getText()+" clicked");
+							seriesLayout.addView(textViewFromLabel(((Button)v).getText(), context),params);
 						}
 					});
 					buttons[i].setBackgroundColor(BG_COLORS[i/2]);
@@ -175,18 +209,6 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 					}
 				};
 				grid.setAdapter(adapter);
-				// TODO series field
-				LinearLayout seriesLayout = (LinearLayout)rootView.findViewById(R.id.seriesInternalLayout);
-				TextView dummy = new TextView(context);
-				dummy.setText("-1");
-				dummy.setBackgroundColor(Color.LTGRAY);
-				seriesLayout.addView(dummy);
-				// TODO training results field
-				LinearLayout trainingLayout = (LinearLayout)rootView.findViewById(R.id.resultsInternalLayout);
-				dummy = new TextView(context);
-				dummy.setText("-2");
-				dummy.setBackgroundColor(Color.LTGRAY);
-				trainingLayout.addView(dummy);
 				break;
 				
 			case 1: // HISTORY
@@ -203,8 +225,26 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 		
 		@Override
 		public void onPause() {
-			// TODO
+			// TODO preserve results
 			super.onPause();
+			Log.d(LOG_TAG, "PAUSED");
+			currentSeries = new LinkedList<Integer>();
+			LinearLayout list = (LinearLayout)getActivity().findViewById(R.id.seriesInternalLayout);
+			if(list != null) {
+				int count = list.getChildCount();
+				Log.d(LOG_TAG, "Saving "+count+" entries");
+				for (int i=0; i<count; i++) 
+					currentSeries.add(Integer.parseInt(((TextView)list.getChildAt(i)).getText().toString()));
+			}
+		}
+		
+		private TextView textViewFromLabel(CharSequence score, Context context) {
+			Log.v(LOG_TAG, "Creating element: "+score);
+			TextView scoreView = new TextView(context);
+			scoreView.setBackgroundColor(Color.LTGRAY);
+			scoreView.setText(score);
+			scoreView.setGravity(Gravity.CENTER);
+			return scoreView;
 		}
 	}
 
