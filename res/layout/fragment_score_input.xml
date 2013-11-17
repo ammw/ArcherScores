@@ -17,6 +17,8 @@
         android:layout_below="@+id/finishButton"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:verticalSpacing="1dp"
+        android:horizontalSpacing="1dp"
         android:numColumns="auto_fit" >
     </GridView>
 
@@ -26,7 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/inputGridView"
-        android:text="@string/submit" />
+        android:text="@string/submit"
+        android:onClick="onInputSeriesButtonClicked" />
 
     <HorizontalScrollView
         android:id="@+id/resultsScrollView"
@@ -64,7 +67,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/inputGridView"
-        android:text="@string/score_close" />
+        android:text="@string/score_close"
+        android:onClick="onInputFinishButtonClicked" />
 
     <TextView
         android:id="@+id/scoreTotalTextView"

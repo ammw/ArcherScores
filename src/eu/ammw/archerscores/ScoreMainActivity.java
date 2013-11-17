@@ -3,6 +3,7 @@ package eu.ammw.archerscores;
 
 import android.app.ActionBar;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,7 +16,9 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
 	
@@ -84,6 +87,16 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 			.commit();
 		return true;
 	}
+	
+	public void onInputSeriesButtonClicked(View view) {
+		// TODO
+		Log.d(LOG_TAG, "series button clicked");
+	}
+	
+	public void onInputFinishButtonClicked(View view) {
+		// TODO
+		Log.d(LOG_TAG, "end training button clicked");
+	}
 
 	/**
 	 * A fragment representing a section of the app.
@@ -92,6 +105,10 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 		
 		private static final String LOG_TAG = "AS-Fr";
 		private static final int BUTTON_COUNT = 12;
+		private static final int [] BG_COLORS =
+			{ Color.YELLOW, Color.RED,   Color.BLUE,  Color.BLACK, Color.LTGRAY, Color.WHITE };
+		private static final int [] TX_COLORS =
+			{ Color.BLACK,  Color.BLACK, Color.WHITE, Color.WHITE, Color.BLACK, Color.BLACK };
 		private final Button [] buttons = new Button[BUTTON_COUNT];
 		
 		public SectionFragment() {
@@ -114,8 +131,20 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 				for (int i=0; i < BUTTON_COUNT; i++) {
 					buttons[i] = new Button(context);
 					buttons[i].setText(String.valueOf(10-i));
+					buttons[i].setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO
+							Log.d(LOG_TAG, "button "+((Button)v).getText()+" clicked");
+						}
+					});
+					buttons[i].setBackgroundColor(BG_COLORS[i/2]);
+					buttons[i].setTextColor(TX_COLORS[i/2]);
 				}
-				buttons[BUTTON_COUNT-1].setText("<");
+				// no idea for the button after 0, make it 0 too
+				buttons[BUTTON_COUNT-1].setText("0");
+				buttons[BUTTON_COUNT-1].setTextColor(BG_COLORS[BUTTON_COUNT/2-1]);
 				BaseAdapter adapter = new BaseAdapter() {
 					
 					@Override
@@ -146,7 +175,20 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 					}
 				};
 				grid.setAdapter(adapter);
+				// TODO series field
+				LinearLayout seriesLayout = (LinearLayout)rootView.findViewById(R.id.seriesInternalLayout);
+				TextView dummy = new TextView(context);
+				dummy.setText("-1");
+				dummy.setBackgroundColor(Color.LTGRAY);
+				seriesLayout.addView(dummy);
+				// TODO training results field
+				LinearLayout trainingLayout = (LinearLayout)rootView.findViewById(R.id.resultsInternalLayout);
+				dummy = new TextView(context);
+				dummy.setText("-2");
+				dummy.setBackgroundColor(Color.LTGRAY);
+				trainingLayout.addView(dummy);
 				break;
+				
 			case 1: // HISTORY
 				rootView = inflater.inflate(R.layout.fragment_score_history, container, false);
 				Log.d(LOG_TAG, "creating HISTORY fragment");
