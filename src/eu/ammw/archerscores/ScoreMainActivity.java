@@ -100,12 +100,7 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 	
 	public void onInputSeriesButtonClicked(View view) {
 		Log.d(LOG_TAG, "series button clicked");
-		/* TODO: it should
-		 * put all scores from current series into current training data
-		 * clear the series view
-		 * create new series
-		 * update total field
-		*/
+		
 		LinkedList<Integer> series = SectionFragment.layoutToList((LinearLayout)findViewById(R.id.seriesInternalLayout));
 		results.add(series);
 		int sum = 0;
@@ -167,7 +162,7 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 					total.setText(String.valueOf(totalScore));
 				else Log.w(LOG_TAG, "No total element!");
 				
-				// TODO series field
+				// series field
 				final LinearLayout seriesLayout = (LinearLayout)rootView.findViewById(R.id.seriesInternalLayout);
 				final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(seriesLayout.getLayoutParams());
 				params.setMargins(2, 2, 2, 2);
@@ -177,7 +172,7 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 						seriesLayout.addView(textViewFromLabel(value.toString(), context), params);
 				} else Log.d(LOG_TAG, "Nothing to restore in this series");
 				
-				// TODO training results field
+				// training results field
 				LinearLayout trainingLayout = (LinearLayout)rootView.findViewById(R.id.resultsInternalLayout);
 				if(trainingResults != null) {
 					Log.d(LOG_TAG, "Restoring "+currentSeries.size()+" values");
@@ -248,11 +243,10 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 		
 		@Override
 		public void onPause() {
-			// TODO preserve results
+			// preserve results
 			super.onPause();
 			Log.d(LOG_TAG, "PAUSED");
 			currentSeries = layoutToList((LinearLayout)getActivity().findViewById(R.id.seriesInternalLayout));
-			
 		}
 		
 		private static LinkedList<Integer> layoutToList(LinearLayout layout) {
