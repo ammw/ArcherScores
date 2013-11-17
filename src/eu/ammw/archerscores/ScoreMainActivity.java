@@ -33,6 +33,11 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 	 * current dropdown position.
 	 */
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
+	
+	private static List<Integer> currentSeries = new LinkedList<Integer>();
+	private static List<Integer> trainingResults = new LinkedList<Integer>();
+	private static List<List<Integer>> results = new LinkedList<List<Integer>>();
+	private static int totalScore = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +106,19 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 		 * create new series
 		 * update total field
 		*/
+		LinkedList<Integer> series = SectionFragment.layoutToList((LinearLayout)findViewById(R.id.seriesInternalLayout));
+		results.add(series);
+		int sum = 0;
+		for (int val : series) 
+			sum += val;
+		((LinearLayout)findViewById(R.id.resultsInternalLayout)).addView(
+				SectionFragment.textViewFromLabel(String.valueOf(sum), this));// FIXME params
+		trainingResults.add(sum);
+		totalScore += sum;
+		((TextView)findViewById(R.id.scoreTotalValueView)).setText(String.valueOf(totalScore));
+		((LinearLayout)findViewById(R.id.seriesInternalLayout)).removeAllViews();
+		if (currentSeries != null)
+			currentSeries.clear();
 	}
 	
 	public void onInputFinishButtonClicked(View view) {
@@ -127,8 +145,6 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 			{ Color.BLACK,  Color.BLACK, Color.WHITE, Color.WHITE, Color.BLACK, Color.BLACK };
 		private final Button [] buttons = new Button[BUTTON_COUNT];
 		
-		private static List<Integer> currentSeries = null;
-		
 		public SectionFragment() {
 		}
 
@@ -146,6 +162,10 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 				if (isPortrait)
 					grid.setNumColumns(3);
 				else grid.setNumColumns(4);
+				TextView total = (TextView)context.findViewById(R.id.scoreTotalValueView);
+				if(total != null)
+					total.setText(String.valueOf(totalScore));
+				else Log.w(LOG_TAG, "No total element!");
 				
 				// TODO series field
 				final LinearLayout seriesLayout = (LinearLayout)rootView.findViewById(R.id.seriesInternalLayout);
@@ -155,13 +175,16 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 					Log.d(LOG_TAG, "Restoring "+currentSeries.size()+" values");
 					for (Integer value : currentSeries)
 						seriesLayout.addView(textViewFromLabel(value.toString(), context), params);
-					currentSeries = null;
 				} else Log.d(LOG_TAG, "Nothing to restore in this series");
 				
 				// TODO training results field
 				LinearLayout trainingLayout = (LinearLayout)rootView.findViewById(R.id.resultsInternalLayout);
-				TextView dummy = textViewFromLabel("-1", context);
-				trainingLayout.addView(dummy, params);
+				if(trainingResults != null) {
+					Log.d(LOG_TAG, "Restoring "+currentSeries.size()+" values");
+					for (Integer value : trainingResults)
+						trainingLayout.addView(textViewFromLabel(value.toString(), context), params);
+				} else Log.d(LOG_TAG, "Nothing to restore in this training");
+				
 				for (int i=0; i < BUTTON_COUNT; i++) {
 					buttons[i] = new Button(context);
 					buttons[i].setText(String.valueOf(10-i));
@@ -228,17 +251,21 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 			// TODO preserve results
 			super.onPause();
 			Log.d(LOG_TAG, "PAUSED");
-			currentSeries = new LinkedList<Integer>();
-			LinearLayout list = (LinearLayout)getActivity().findViewById(R.id.seriesInternalLayout);
-			if(list != null) {
-				int count = list.getChildCount();
-				Log.d(LOG_TAG, "Saving "+count+" entries");
-				for (int i=0; i<count; i++) 
-					currentSeries.add(Integer.parseInt(((TextView)list.getChildAt(i)).getText().toString()));
-			}
+			currentSeries = layoutToList((LinearLayout)getActivity().findViewById(R.id.seriesInternalLayout));
+			
 		}
 		
-		private TextView textViewFromLabel(CharSequence score, Context context) {
+		private static LinkedList<Integer> layoutToList(LinearLayout layout) {
+			if (layout == null) return null;
+			LinkedList<Integer> returnedList = new LinkedList<Integer>();
+			int count = layout.getChildCount();
+			Log.d(LOG_TAG, "Saving "+count+" entries");
+			for (int i=0; i<count; i++) 
+				returnedList.add(Integer.parseInt(((TextView)layout.getChildAt(i)).getText().toString()));
+			return returnedList;
+		}
+		
+		private static TextView textViewFromLabel(CharSequence score, Context context) {
 			Log.v(LOG_TAG, "Creating element: "+score);
 			TextView scoreView = new TextView(context);
 			scoreView.setBackgroundColor(Color.LTGRAY);

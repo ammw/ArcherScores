@@ -39,15 +39,15 @@
         android:layout_alignRight="@+id/inputGridView"
         android:text="@string/score_close"
         android:onClick="onInputFinishButtonClicked" />
-
+    
     <TextView
-        android:id="@+id/scoreTotalTextView"
+        android:id="@+id/scoreTotalValueView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/finishButton"
         android:layout_alignBottom="@+id/finishButton"
         android:layout_toLeftOf="@+id/finishButton"
-        android:text="@string/score_total" />
+        android:text="@string/zero" />
 
     <HorizontalScrollView
         android:id="@+id/seriesScrollView"
@@ -84,5 +84,14 @@
             android:orientation="horizontal" >
         </LinearLayout>
     </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/scoreTotalTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/scoreTotalValueView"
+        android:layout_alignBottom="@+id/scoreTotalValueView"
+        android:layout_toLeftOf="@+id/scoreTotalValueView"
+        android:text="@string/score_total" />
 
 </RelativeLayout>
