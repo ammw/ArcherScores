@@ -9,5 +9,9 @@
     <string name="submit">"Submit"</string>
     <string name="score_close">End training</string>
     <string name="zero">0</string>
+    <string name="message_training_saved">Training saved.</string>
+    <string name="message_empty_history">Empty. Go shoot something.</string>
+    <string name="format_history">\u0025s \ntotal score: \u0025d </string>
+    <string name="format_date">\u0025a, \u0025F \u0025R</string>
 
 </resources>

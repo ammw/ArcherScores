@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
 	
@@ -97,6 +98,8 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 		((TextView)findViewById(R.id.scoreTotalValueView)).setText(R.string.zero);
 		((LinearLayout)findViewById(R.id.seriesInternalLayout)).removeAllViews();
 		((LinearLayout)findViewById(R.id.resultsInternalLayout)).removeAllViews();
+		Toast.makeText(ScoreMainActivity.this, getString(R.string.message_training_saved),
+				Toast.LENGTH_SHORT).show();
 	}
 
 }

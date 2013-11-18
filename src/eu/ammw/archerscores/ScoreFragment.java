@@ -83,7 +83,7 @@ public class ScoreFragment extends Fragment {
 				buttons[i].setTextColor(TX_COLORS[i/2]);
 			}
 			// no idea for the button after 0, make it 0 too
-			buttons[BUTTON_COUNT-1].setText("0");
+			buttons[BUTTON_COUNT-1].setText(getString(R.string.zero));
 			buttons[BUTTON_COUNT-1].setTextColor(BG_COLORS[BUTTON_COUNT/2-1]);
 			BaseAdapter adapter = new BaseAdapter() {
 				
