@@ -119,8 +119,8 @@ public class ScoreFragment extends Fragment {
 			rootView = inflater.inflate(R.layout.fragment_score_history, container, false);
 			Log.d(LOG_TAG, "creating HISTORY fragment");
 			ListView view = (ListView)rootView.findViewById(R.id.historyListView);
-			view.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, new String [] {"Nothing :("}));
-			// TODO
+			String [] history = logic.getHistory();
+			view.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, history));
 			break;
 		}
 		

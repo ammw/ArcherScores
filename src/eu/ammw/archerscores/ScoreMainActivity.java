@@ -21,7 +21,7 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 	 */
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	
-	private final ScoreLogic logic = ScoreLogic.getInstance();
+	private final ScoreLogic logic = ScoreLogic.getInstance(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +94,9 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 	public void onInputFinishButtonClicked(View view) {
 		Log.d(LOG_TAG, "end training button clicked");
 		logic.finishTraining();
+		((TextView)findViewById(R.id.scoreTotalValueView)).setText(R.string.zero);
+		((LinearLayout)findViewById(R.id.seriesInternalLayout)).removeAllViews();
+		((LinearLayout)findViewById(R.id.resultsInternalLayout)).removeAllViews();
 	}
 
 }
