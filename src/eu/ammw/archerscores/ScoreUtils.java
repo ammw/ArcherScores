@@ -6,12 +6,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.Gravity;
+import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 public class ScoreUtils {
 	private static final String LOG_TAG = "AS-U";
+	private static final int SCORE_COLOR = Color.WHITE;
 	
 	public static LinkedList<Integer> layoutToList(LinearLayout layout) {
 		if (layout == null) return null;
@@ -23,19 +24,12 @@ public class ScoreUtils {
 		return returnedList;
 	}
 	
-	public static TextView textViewFromLabel(CharSequence score, Context context) {
+	public static Button buttonFromLabel(CharSequence score, Context context) {
 		Log.v(LOG_TAG, "Creating element: "+score);
-		TextView scoreView = new TextView(context);
-		scoreView.setBackgroundColor(Color.LTGRAY);
-		scoreView.setText(score);
-		scoreView.setGravity(Gravity.CENTER);
-		return scoreView;
-	}
-	
-	public static LayoutParams getScoreViewParams() {
-		LayoutParams params = 
-				new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		params.setMargins(2, 2, 2, 2);
-		return params;
+		Button button = new Button(context);
+		button.setBackgroundColor(SCORE_COLOR);
+		button.setText(score);
+		button.setGravity(Gravity.CENTER);
+		return button;
 	}
 }

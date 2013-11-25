@@ -32,7 +32,6 @@ public class ScoreFragment extends Fragment {
 	
 	private FragmentActivity context;
 	private final ScoreLogic logic = ScoreLogic.getInstance();
-	private LinearLayout.LayoutParams params = ScoreUtils.getScoreViewParams();
 	
 	public ScoreFragment() {
 	}
@@ -57,13 +56,13 @@ public class ScoreFragment extends Fragment {
 			// series field
 			final LinearLayout seriesLayout = (LinearLayout)rootView.findViewById(R.id.seriesInternalLayout);
 			for (Integer value : logic.getCurrentSeries())
-				seriesLayout.addView(ScoreUtils.textViewFromLabel(value.toString(), context), params);
+				seriesLayout.addView(ScoreUtils.buttonFromLabel(value.toString(), context));
 			Log.d(LOG_TAG, "Adding "+logic.getCurrentSeries().size()+" elements to series ");
 			
 			// training results field
 			LinearLayout trainingLayout = (LinearLayout)rootView.findViewById(R.id.resultsInternalLayout);
 			for (Integer value : logic.getCurrentTraining())
-				trainingLayout.addView(ScoreUtils.textViewFromLabel(value.toString(), context), params);
+				trainingLayout.addView(ScoreUtils.buttonFromLabel(value.toString(), context));
 			Log.d(LOG_TAG, "Adding "+logic.getCurrentTraining().size()+" elements to training");
 			
 			for (int i=0; i < BUTTON_COUNT; i++) {
@@ -75,7 +74,7 @@ public class ScoreFragment extends Fragment {
 					public void onClick(View v) {
 						CharSequence value = ((Button)v).getText();
 						Log.d(LOG_TAG, "button "+value+" clicked");
-						seriesLayout.addView(ScoreUtils.textViewFromLabel(value, context),params);
+						seriesLayout.addView(ScoreUtils.buttonFromLabel(value, context));
 						logic.hit(value);
 					}
 				});

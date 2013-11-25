@@ -89,7 +89,7 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 		((TextView)findViewById(R.id.scoreTotalValueView)).setText(String.valueOf(logic.getTotal()));
 		((LinearLayout)findViewById(R.id.seriesInternalLayout)).removeAllViews();
 		((LinearLayout)findViewById(R.id.resultsInternalLayout)).addView(
-				ScoreUtils.textViewFromLabel(String.valueOf(sum), this), ScoreUtils.getScoreViewParams());
+				ScoreUtils.buttonFromLabel(String.valueOf(sum), this));
 	}
 	
 	public void onInputFinishButtonClicked(View view) {
