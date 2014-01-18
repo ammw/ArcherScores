@@ -1,9 +1,9 @@
-package eu.ammw.archerscores;
+package eu.ammw.android.targetpractice.util;
 
-import static eu.ammw.archerscores.HistoryOpenHelper.DB_RESULT_COL_NAMES;
-import static eu.ammw.archerscores.HistoryOpenHelper.DB_RESULT_TABLE_NAME;
-import static eu.ammw.archerscores.HistoryOpenHelper.DB_TRAINING_COL_NAMES;
-import static eu.ammw.archerscores.HistoryOpenHelper.DB_TRAINING_TABLE_NAME;
+import static eu.ammw.android.targetpractice.util.HistoryOpenHelper.DB_RESULT_COL_NAMES;
+import static eu.ammw.android.targetpractice.util.HistoryOpenHelper.DB_RESULT_TABLE_NAME;
+import static eu.ammw.android.targetpractice.util.HistoryOpenHelper.DB_TRAINING_COL_NAMES;
+import static eu.ammw.android.targetpractice.util.HistoryOpenHelper.DB_TRAINING_TABLE_NAME;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -16,9 +16,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.format.Time;
 import android.util.Log;
 import android.util.SparseArray;
+import eu.ammw.android.targetpractice.R;
 
-public class ScoreLogic {
-	private static ScoreLogic instance = new ScoreLogic();
+public class TargetPracticeLogic {
+	private static TargetPracticeLogic instance = new TargetPracticeLogic();
 	private Activity activity = null;
 	
 	private static final String LOG_TAG = "AS-L";
@@ -32,17 +33,17 @@ public class ScoreLogic {
 	private int totalScore = 0;
 	private Time date = new Time(Time.getCurrentTimezone());
 	
-	private ScoreLogic() {
+	private TargetPracticeLogic() {
 		if(instance != null)
 			Log.e(LOG_TAG, "New logic created!");
 		date.setToNow();
 	}
 	
-	public static ScoreLogic getInstance() {
+	public static TargetPracticeLogic getInstance() {
 		return instance;
 	}
 	
-	public static ScoreLogic getInstance(Activity a) {
+	public static TargetPracticeLogic getInstance(Activity a) {
 		setActivity(a);
 		return instance;
 	}

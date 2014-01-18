@@ -1,6 +1,8 @@
-package eu.ammw.archerscores;
+package eu.ammw.android.targetpractice;
 
 
+import eu.ammw.android.targetpractice.util.TargetPracticeLogic;
+import eu.ammw.android.targetpractice.util.TargetPracticeUtils;
 import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
+public class TargetPracticeActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
 	
 	private static final String LOG_TAG = "AS-Main";
 	/**
@@ -22,12 +24,12 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 	 */
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	
-	private final ScoreLogic logic = ScoreLogic.getInstance(this);
+	private final TargetPracticeLogic logic = TargetPracticeLogic.getInstance(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_score_main);
+		setContentView(R.layout.activity_tp_main);
 
 		// Set up the action bar to show a dropdown list.
 		final ActionBar actionBar = getActionBar();
@@ -76,7 +78,7 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 	public boolean onNavigationItemSelected(int position, long id) {
 		// When the given dropdown item is selected, show its contents in the
 		// container view.
-		Fragment fragment = new ScoreFragment();
+		Fragment fragment = new TargetPracticeFragment();
 		getSupportFragmentManager().beginTransaction()
 			.replace(R.id.container, fragment)
 			.commit();
@@ -89,7 +91,7 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 		((TextView)findViewById(R.id.scoreTotalValueView)).setText(String.valueOf(logic.getTotal()));
 		((LinearLayout)findViewById(R.id.seriesInternalLayout)).removeAllViews();
 		((LinearLayout)findViewById(R.id.resultsInternalLayout)).addView(
-				ScoreUtils.buttonFromLabel(String.valueOf(sum), this));
+				TargetPracticeUtils.buttonFromLabel(String.valueOf(sum), this));
 	}
 	
 	public void onInputFinishButtonClicked(View view) {
@@ -98,7 +100,7 @@ public class ScoreMainActivity extends FragmentActivity implements ActionBar.OnN
 		((TextView)findViewById(R.id.scoreTotalValueView)).setText(R.string.zero);
 		((LinearLayout)findViewById(R.id.seriesInternalLayout)).removeAllViews();
 		((LinearLayout)findViewById(R.id.resultsInternalLayout)).removeAllViews();
-		Toast.makeText(ScoreMainActivity.this, getString(R.string.message_training_saved),
+		Toast.makeText(TargetPracticeActivity.this, getString(R.string.message_training_saved),
 				Toast.LENGTH_SHORT).show();
 	}
 

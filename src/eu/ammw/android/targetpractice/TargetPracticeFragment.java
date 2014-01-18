@@ -1,5 +1,7 @@
-package eu.ammw.archerscores;
+package eu.ammw.android.targetpractice;
 
+import eu.ammw.android.targetpractice.util.TargetPracticeLogic;
+import eu.ammw.android.targetpractice.util.TargetPracticeUtils;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,7 +22,7 @@ import android.widget.TextView;
 /**
  * A fragment representing a section of the app.
  */
-public class ScoreFragment extends Fragment {
+public class TargetPracticeFragment extends Fragment {
 	
 	private static final String LOG_TAG = "AS-Fr";
 	private static final int BUTTON_COUNT = 12;
@@ -31,9 +33,9 @@ public class ScoreFragment extends Fragment {
 	private final Button [] buttons = new Button[BUTTON_COUNT];
 	
 	private FragmentActivity context;
-	private final ScoreLogic logic = ScoreLogic.getInstance();
+	private final TargetPracticeLogic logic = TargetPracticeLogic.getInstance();
 	
-	public ScoreFragment() {
+	public TargetPracticeFragment() {
 	}
 
 	@Override
@@ -56,13 +58,13 @@ public class ScoreFragment extends Fragment {
 			// series field
 			final LinearLayout seriesLayout = (LinearLayout)rootView.findViewById(R.id.seriesInternalLayout);
 			for (Integer value : logic.getCurrentSeries())
-				seriesLayout.addView(ScoreUtils.buttonFromLabel(value.toString(), context));
+				seriesLayout.addView(TargetPracticeUtils.buttonFromLabel(value.toString(), context));
 			Log.d(LOG_TAG, "Adding "+logic.getCurrentSeries().size()+" elements to series ");
 			
 			// training results field
 			LinearLayout trainingLayout = (LinearLayout)rootView.findViewById(R.id.resultsInternalLayout);
 			for (Integer value : logic.getCurrentTraining())
-				trainingLayout.addView(ScoreUtils.buttonFromLabel(value.toString(), context));
+				trainingLayout.addView(TargetPracticeUtils.buttonFromLabel(value.toString(), context));
 			Log.d(LOG_TAG, "Adding "+logic.getCurrentTraining().size()+" elements to training");
 			
 			for (int i=0; i < BUTTON_COUNT; i++) {
@@ -74,7 +76,7 @@ public class ScoreFragment extends Fragment {
 					public void onClick(View v) {
 						CharSequence value = ((Button)v).getText();
 						Log.d(LOG_TAG, "button "+value+" clicked");
-						seriesLayout.addView(ScoreUtils.buttonFromLabel(value, context));
+						seriesLayout.addView(TargetPracticeUtils.buttonFromLabel(value, context));
 						logic.hit(value);
 					}
 				});
@@ -115,7 +117,7 @@ public class ScoreFragment extends Fragment {
 			break;
 			
 		case 1: // HISTORY
-			rootView = inflater.inflate(R.layout.fragment_score_history, container, false);
+			rootView = inflater.inflate(R.layout.fragment_history, container, false);
 			Log.d(LOG_TAG, "creating HISTORY fragment");
 			ListView view = (ListView)rootView.findViewById(R.id.historyListView);
 			String [] history = logic.getHistory();

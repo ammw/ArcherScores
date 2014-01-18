@@ -1,11 +1,11 @@
-package eu.ammw.archerscores;
+package eu.ammw.android.targetpractice.util;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class HistoryOpenHelper extends SQLiteOpenHelper {
-	private static final String DB_NAME = "archerscores.db";
+	private static final String DB_NAME = "targetpractice.db";
 	public static final String DB_TRAINING_TABLE_NAME = "Training";
 	public static final String [] DB_TRAINING_COL_NAMES = 
 		{"_id", "StartDate", "EndDate", "Note"};

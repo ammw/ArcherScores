@@ -1,4 +1,4 @@
-package eu.ammw.archerscores;
+package eu.ammw.android.targetpractice.util;
 
 import java.util.LinkedList;
 
@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ScoreUtils {
+public class TargetPracticeUtils {
 	private static final String LOG_TAG = "AS-U";
 	private static final int SCORE_COLOR = Color.WHITE;
 	

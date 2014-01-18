@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Archer Scores</string>
+    <string name="app_name">Target Practice</string>
     <string name="action_settings">Settings</string>
     <string name="title_section_input">Training</string>
     <string name="title_section_history">History</string>
     <string name="score_total">"Total: "</string>
     <string name="submit">"Submit"</string>
-    <string name="score_close">End training</string>
+    <string name="training_end">End training</string>
     <string name="zero">0</string>
     <string name="message_training_saved">Training saved.</string>
     <string name="message_empty_history">Empty. Go shoot something.</string>

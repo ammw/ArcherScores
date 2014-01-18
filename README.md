@@ -1,5 +1,4 @@
-Archer Scores
+Target Practice
 ============
 
-A very simple Android application to count archery training results.
-
+A very simple Android application to track results while training archery, shooting etc.
