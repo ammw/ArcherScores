@@ -84,9 +84,9 @@ public class TargetPracticeFragment extends Fragment {
 				buttons[i].setBackgroundColor(BG_COLORS[i/2]);
 				buttons[i].setTextColor(TX_COLORS[i/2]);
 			}
-			// no idea for the button after 0, make it 0 too
-			buttons[BUTTON_COUNT-1].setText(getString(R.string.zero));
-			buttons[BUTTON_COUNT-1].setTextColor(BG_COLORS[BUTTON_COUNT/2-1]);
+			// no idea for the button after 0, hide it
+			buttons[BUTTON_COUNT-1].setVisibility(View.INVISIBLE);
+			
 			BaseAdapter adapter = new BaseAdapter() {
 				
 				@Override
