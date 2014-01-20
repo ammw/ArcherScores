@@ -24,7 +24,7 @@ import android.widget.TextView;
  */
 public class TargetPracticeFragment extends Fragment {
 	
-	private static final String LOG_TAG = "AS-Fr";
+	private static final String LOG_TAG = "TP-Fr";
 	private static final int BUTTON_COUNT = 12;
 	private static final int [] BG_COLORS =
 		{ Color.YELLOW, Color.RED,   Color.BLUE,  Color.BLACK, Color.LTGRAY, Color.WHITE };

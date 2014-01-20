@@ -1,6 +1,7 @@
 package eu.ammw.android.targetpractice.util;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,10 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class TargetPracticeUtils {
-	private static final String LOG_TAG = "AS-U";
+	private static final String LOG_TAG = "TP-U";
 	private static final int SCORE_COLOR = Color.WHITE;
 	
-	public static LinkedList<Integer> layoutToList(LinearLayout layout) {
+	public static List<Integer> layoutToList(LinearLayout layout) {
 		if (layout == null) return null;
 		LinkedList<Integer> returnedList = new LinkedList<Integer>();
 		int count = layout.getChildCount();

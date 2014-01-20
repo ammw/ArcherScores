@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 public class TargetPracticeActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
 	
-	private static final String LOG_TAG = "AS-Main";
+	private static final String LOG_TAG = "TP-Main";
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * current dropdown position.

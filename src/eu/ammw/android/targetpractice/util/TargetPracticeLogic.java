@@ -1,18 +1,11 @@
 package eu.ammw.android.targetpractice.util;
 
-import static eu.ammw.android.targetpractice.util.HistoryOpenHelper.DB_RESULT_COL_NAMES;
-import static eu.ammw.android.targetpractice.util.HistoryOpenHelper.DB_RESULT_TABLE_NAME;
-import static eu.ammw.android.targetpractice.util.HistoryOpenHelper.DB_TRAINING_COL_NAMES;
-import static eu.ammw.android.targetpractice.util.HistoryOpenHelper.DB_TRAINING_TABLE_NAME;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.text.format.Time;
 import android.util.Log;
 import android.util.SparseArray;
@@ -22,9 +15,7 @@ public class TargetPracticeLogic {
 	private static TargetPracticeLogic instance = new TargetPracticeLogic();
 	private Activity activity = null;
 	
-	private static final String LOG_TAG = "AS-L";
-	private static String HISTORY_FORMAT;
-	private static String DATE_FORMAT;
+	private static final String LOG_TAG = "TP-L";
 	
 	private List<Integer> currentSeries = new ArrayList<Integer>();
 	private List<Integer> currentTraining = new LinkedList<Integer>();
@@ -69,7 +60,9 @@ public class TargetPracticeLogic {
 	}
 	
 	public String [] getHistory() {
-		if (history==null) retrieveHistory();
+		// TODO decide whether this should be retrieved every time
+		//if (history==null) 
+			retrieveHistory();
 		return (history.size()==0 ? 
 				new String[] {activity.getString(R.string.message_empty_history)} : 
 				history.toArray(new String[] {null}));
@@ -77,31 +70,9 @@ public class TargetPracticeLogic {
 	
 	private void retrieveHistory() {
 		Log.d(LOG_TAG, "Retrieving history");
-		HistoryOpenHelper dbHelper = new HistoryOpenHelper(activity);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		/* 
-		 * SELECT StartDate, SUM(Score) 
-		 * FROM Training INNER JOIN Score ON Training._id = Score.TrainingID 
-		 * GROUP BY TrainingID ORDER BY StartDate DESC
-		 */
-		String query = "SELECT "+DB_TRAINING_COL_NAMES[1] + ", SUM(" + DB_RESULT_COL_NAMES[3] + 
-				") FROM " + DB_TRAINING_TABLE_NAME + " INNER JOIN " + DB_RESULT_TABLE_NAME +
-				" ON " + DB_TRAINING_TABLE_NAME+"."+DB_TRAINING_COL_NAMES[0] + " = " +
-					DB_RESULT_TABLE_NAME+"."+DB_RESULT_COL_NAMES[1] +
-				" GROUP BY " + DB_RESULT_COL_NAMES[1] + " ORDER BY " + DB_TRAINING_COL_NAMES[1] + " DESC ";
-		Cursor cursor = db.rawQuery(query, null);
-		history = new LinkedList<String>();
-		HISTORY_FORMAT = activity.getString(R.string.format_history);
-		Log.v(LOG_TAG, "History format is "+HISTORY_FORMAT);
-		DATE_FORMAT = activity.getString(R.string.format_date);
-		Log.v(LOG_TAG, "Date format is "+DATE_FORMAT);
-		while (cursor.moveToNext()) {
-			Time t = new Time();
-			t.parse(cursor.getString(0));
-			history.add(String.format(HISTORY_FORMAT, t.format(DATE_FORMAT), cursor.getInt(1)));
-		}
-		cursor.close();
-		db.close();
+		HistoryDatabaseHelper dbHelper = new HistoryDatabaseHelper(activity);
+		history = dbHelper.retrieveHistory(activity.getString(R.string.format_history), 
+											activity.getString(R.string.format_date));
 		dbHelper.close();
 	}
 	
@@ -122,31 +93,17 @@ public class TargetPracticeLogic {
 			for (int val : currentSeries) 
 				totalScore += val;
 		}
-		Time endTime = new Time(Time.getCurrentTimezone());
-		endTime.setToNow();
-		HistoryOpenHelper dbHelper = new HistoryOpenHelper(activity);
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		ContentValues vals = new ContentValues();
-		vals.put(DB_TRAINING_COL_NAMES[1], date.format2445());
-		vals.put(DB_TRAINING_COL_NAMES[2], endTime.format2445());
-		long id = db.insert(DB_TRAINING_TABLE_NAME, DB_TRAINING_COL_NAMES[3], vals);
-		Log.i(LOG_TAG, "Inserted training as row #"+id);
-		
-		for (int i=0; i<results.size(); i++) {
-			for (int shot : results.get(i)) {
-				vals = new ContentValues();
-				vals.put(DB_RESULT_COL_NAMES[1], id);
-				vals.put(DB_RESULT_COL_NAMES[2], i);
-				vals.put(DB_RESULT_COL_NAMES[3], shot);
-				db.insert(DB_RESULT_TABLE_NAME, null, vals);
-			}
+		if (results.size() > 0) {
+			Time endTime = new Time(Time.getCurrentTimezone());
+			endTime.setToNow();
+			HistoryDatabaseHelper dbHelper = new HistoryDatabaseHelper(activity);
+			dbHelper.saveTraining(date, endTime, results);
+			dbHelper.close();
+			
+			if (history != null)
+				history.add(0, String.format(activity.getString(R.string.format_history), 
+						date.format(activity.getString(R.string.format_date)), totalScore));
 		}
-		
-		db.close();
-		dbHelper.close();
-		
-		if (history != null)
-			history.add(0, String.format(HISTORY_FORMAT, date.format(DATE_FORMAT), totalScore));
 		
 		totalScore = 0;
 		currentSeries = new ArrayList<Integer>();
