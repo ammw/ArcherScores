@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.format.Time;
 import android.util.Log;
-import android.util.SparseArray;
 
 public class HistoryDatabaseHelper extends SQLiteOpenHelper {
 	private static final String LOG_TAG = "TP-DB";
@@ -98,7 +97,7 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
 	 * 
 	 * @return			Row number of the inserted training.
 	 */
-	public long saveTraining(Time startTime, Time endTime, SparseArray<List<Integer>> results) {
+	public long saveTraining(Time startTime, Time endTime, List<List<Integer>> results) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues vals = new ContentValues();
 		vals.put(DB_TRAINING_COL_NAMES[1], startTime.format2445());
@@ -107,7 +106,7 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
 		Log.i(LOG_TAG, "Inserted training as row #"+id);
 		
 		for (int i=0; i<results.size(); i++) {
-			for (int shot : results.get(i)) {
+			if (results != null) for (int shot : results.get(i)) {
 				vals = new ContentValues();
 				vals.put(DB_RESULT_COL_NAMES[1], id);
 				vals.put(DB_RESULT_COL_NAMES[2], i);

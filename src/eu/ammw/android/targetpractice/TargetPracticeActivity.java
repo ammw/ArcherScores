@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,40 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	
 	private TargetPracticeLogic logic;
+	
+	private View.OnLongClickListener recordListener = new View.OnLongClickListener() {
+		
+		@Override
+		public boolean onLongClick(View v) {
+			onInputSeriesButtonClicked(v);
+			LinearLayout parent = ((LinearLayout)v.getParent());
+			int index = parent.indexOfChild(v);
+			parent.removeView(v);
+			logic.remove(index, true);
+			((TextView)findViewById(R.id.scoreTotalValueView)).setText(String.valueOf(logic.getTotal()));
+			// Load series:
+			LinearLayout seriesLayout = ((LinearLayout)findViewById(R.id.seriesInternalLayout));
+			for (Integer value : logic.getCurrentSeries()) {
+				Button butt = TargetPracticeUtils.buttonFromLabel(value.toString(), TargetPracticeActivity.this);
+				butt.setOnLongClickListener(hitListener);
+				seriesLayout.addView(butt);
+			}
+			return true;
+		}
+	};
+	
+	private View.OnLongClickListener hitListener = new View.OnLongClickListener() {
+		
+		@Override
+		public boolean onLongClick(View v) {
+											
+			LinearLayout parent = (LinearLayout)v.getParent();
+			int index = parent.indexOfChild(v);
+			logic.remove(index, false);
+			parent.removeView(v);
+			return true;
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +99,7 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 					savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
 		}
 		
+		// Restore serialized results state:
 		if (savedInstanceState.containsKey(KEY_LOGIC)) {
 			logic = (TargetPracticeLogic)savedInstanceState.getSerializable(KEY_LOGIC);
 		} else logic = new TargetPracticeLogic(this);
@@ -73,7 +110,7 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 		// Serialize the current dropdown position.
 		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
 				getActionBar().getSelectedNavigationIndex());
-		
+		// Serialize results state.
 		outState.putSerializable(KEY_LOGIC, logic);
 	}
 
@@ -97,11 +134,14 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 	
 	public void onInputSeriesButtonClicked(View view) {
 		Log.d(LOG_TAG, "series button clicked");
-		int sum = logic.endSeries();
+		final int sum = logic.endSeries();
+		if (sum < 0) return;
 		((TextView)findViewById(R.id.scoreTotalValueView)).setText(String.valueOf(logic.getTotal()));
 		((LinearLayout)findViewById(R.id.seriesInternalLayout)).removeAllViews();
-		((LinearLayout)findViewById(R.id.resultsInternalLayout)).addView(
-				TargetPracticeUtils.buttonFromLabel(String.valueOf(sum), this));
+		Button butt = TargetPracticeUtils.buttonFromLabel(String.valueOf(sum), this);
+		butt.setOnLongClickListener(recordListener);
+		((LinearLayout)findViewById(R.id.resultsInternalLayout)).addView(butt);
+		((HorizontalScrollView)findViewById(R.id.resultsScrollView)).fullScroll(View.FOCUS_RIGHT);
 	}
 	
 	public void onInputFinishButtonClicked(View view) {
@@ -116,5 +156,13 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 	
 	TargetPracticeLogic getLogic() {
 		return logic;
+	}
+	
+	View.OnLongClickListener getHitListener() {
+		return hitListener;
+	}
+	
+	View.OnLongClickListener getRecordListener() {
+		return recordListener;
 	}
 }

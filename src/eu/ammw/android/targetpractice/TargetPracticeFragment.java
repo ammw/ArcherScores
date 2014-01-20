@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,6 +35,20 @@ public class TargetPracticeFragment extends Fragment {
 	
 	private FragmentActivity context;
 	private TargetPracticeLogic logic;
+	
+	private View.OnClickListener colorButtonListener = new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			final String value = ((Button)v).getText().toString();
+			Log.v(LOG_TAG, "button "+value+" clicked");
+			Button butt = TargetPracticeUtils.buttonFromLabel(value, context);
+			butt.setOnLongClickListener(((TargetPracticeActivity)getActivity()).getHitListener());
+			((LinearLayout)(getActivity().findViewById(R.id.seriesInternalLayout))).addView(butt);
+			logic.hit(value);
+			((HorizontalScrollView)getActivity().findViewById(R.id.seriesScrollView)).fullScroll(View.FOCUS_RIGHT);
+		}
+	};
 	
 	public TargetPracticeFragment() {
 	}
@@ -58,35 +73,31 @@ public class TargetPracticeFragment extends Fragment {
 			
 			// series field
 			final LinearLayout seriesLayout = (LinearLayout)rootView.findViewById(R.id.seriesInternalLayout);
-			for (Integer value : logic.getCurrentSeries())
-				seriesLayout.addView(TargetPracticeUtils.buttonFromLabel(value.toString(), context));
+			for (Integer value : logic.getCurrentSeries()) {
+				Button butt = TargetPracticeUtils.buttonFromLabel(value.toString(), context);
+				butt.setOnLongClickListener(((TargetPracticeActivity)context).getHitListener());
+				seriesLayout.addView(butt);
+			}
 			Log.v(LOG_TAG, "Adding "+logic.getCurrentSeries().size()+" elements to series ");
 			
 			// training results field
-			LinearLayout trainingLayout = (LinearLayout)rootView.findViewById(R.id.resultsInternalLayout);
-			for (Integer value : logic.getCurrentTraining())
-				trainingLayout.addView(TargetPracticeUtils.buttonFromLabel(value.toString(), context));
+			final LinearLayout trainingLayout = (LinearLayout)rootView.findViewById(R.id.resultsInternalLayout);
+			for (Integer value : logic.getCurrentTraining()) {
+				Button butt = TargetPracticeUtils.buttonFromLabel(value.toString(), context);
+				butt.setOnLongClickListener(((TargetPracticeActivity)context).getRecordListener());
+				trainingLayout.addView(butt);
+			}
 			Log.v(LOG_TAG, "Adding "+logic.getCurrentTraining().size()+" elements to training");
 			
 			for (int i=0; i < BUTTON_COUNT; i++) {
 				buttons[i] = new Button(context);
 				buttons[i].setText(String.valueOf(10-i));
-				buttons[i].setOnClickListener(new View.OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						CharSequence value = ((Button)v).getText();
-						Log.v(LOG_TAG, "button "+value+" clicked");
-						seriesLayout.addView(TargetPracticeUtils.buttonFromLabel(value, context));
-						logic.hit(value);
-					}
-				});
+				buttons[i].setOnClickListener(colorButtonListener);
 				buttons[i].setBackgroundColor(BG_COLORS[i/2]);
 				buttons[i].setTextColor(TX_COLORS[i/2]);
 			}
 			// no idea for the button after 0, hide it
 			buttons[BUTTON_COUNT-1].setVisibility(View.INVISIBLE);
-			
 			BaseAdapter adapter = new BaseAdapter() {
 				
 				@Override

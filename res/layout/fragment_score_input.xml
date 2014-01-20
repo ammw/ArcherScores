@@ -75,7 +75,8 @@
         android:layout_alignBottom="@+id/finishButton"
         android:layout_alignLeft="@+id/inputGridView"
         android:layout_toLeftOf="@+id/scoreTotalTextView"
-        android:padding="5dp" >
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" >
 
         <LinearLayout
             android:id="@+id/resultsInternalLayout"

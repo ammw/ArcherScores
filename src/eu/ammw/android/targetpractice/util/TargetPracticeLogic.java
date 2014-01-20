@@ -9,7 +9,6 @@ import java.util.List;
 import android.app.Activity;
 import android.text.format.Time;
 import android.util.Log;
-import android.util.SparseArray;
 import eu.ammw.android.targetpractice.R;
 
 public class TargetPracticeLogic implements Serializable {
@@ -22,7 +21,7 @@ public class TargetPracticeLogic implements Serializable {
 	private List<Integer> currentSeries = new ArrayList<Integer>();
 	private List<Integer> currentTraining = new LinkedList<Integer>();
 	private List<String> history = null;
-	private SparseArray<List<Integer>> results = new SparseArray<List<Integer>>();
+	private List<List<Integer>> results = new LinkedList<List<Integer>>();
 	private int totalScore = 0;
 	private Time date = new Time(Time.getCurrentTimezone());
 	
@@ -70,7 +69,8 @@ public class TargetPracticeLogic implements Serializable {
 	}
 	
 	public int endSeries() {
-		results.put(results.size(),currentSeries);
+		if (currentSeries.isEmpty()) return -1;
+		results.add(currentSeries);
 		int sum = 0;
 		for (int val : currentSeries) 
 			sum += val;
@@ -82,7 +82,7 @@ public class TargetPracticeLogic implements Serializable {
 	
 	public void finishTraining() {
 		if (!currentSeries.isEmpty()) {
-			results.put(results.size(), currentSeries);
+			results.add(currentSeries);
 			for (int val : currentSeries) 
 				totalScore += val;
 		}
@@ -103,5 +103,18 @@ public class TargetPracticeLogic implements Serializable {
 		currentTraining.clear();
 		results.clear();
 		date.setToNow();
+	}
+	
+	public void remove(int index, boolean compound) {
+		Log.v(LOG_TAG, "Removing "+ (compound? "record" : "hit") +" at @"+index);
+		if (compound) {
+			//if (!currentSeries.isEmpty()) endSeries();
+			totalScore -= currentTraining.get(index);
+			currentTraining.remove(index);
+			// Load series
+			currentSeries = results.get(index);
+			results.remove(index);
+		}
+		else currentSeries.remove(index);
 	}
 }
