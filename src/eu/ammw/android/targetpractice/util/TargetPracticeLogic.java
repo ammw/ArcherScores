@@ -1,6 +1,7 @@
 package eu.ammw.android.targetpractice.util;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,9 +12,10 @@ import android.util.Log;
 import android.util.SparseArray;
 import eu.ammw.android.targetpractice.R;
 
-public class TargetPracticeLogic {
-	private static TargetPracticeLogic instance = new TargetPracticeLogic();
-	private Activity activity = null;
+public class TargetPracticeLogic implements Serializable {
+	private static final long serialVersionUID = 1972542623306334288L;
+
+	private transient Activity activity = null;
 	
 	private static final String LOG_TAG = "TP-L";
 	
@@ -24,23 +26,14 @@ public class TargetPracticeLogic {
 	private int totalScore = 0;
 	private Time date = new Time(Time.getCurrentTimezone());
 	
-	private TargetPracticeLogic() {
-		if(instance != null)
-			Log.e(LOG_TAG, "New logic created!");
+	public TargetPracticeLogic(Activity a) {
+		Log.i(LOG_TAG, "Logic created!");
 		date.setToNow();
+		this.activity = a;
 	}
 	
-	public static TargetPracticeLogic getInstance() {
-		return instance;
-	}
-	
-	public static TargetPracticeLogic getInstance(Activity a) {
-		setActivity(a);
-		return instance;
-	}
-	
-	public static void setActivity(Activity a) {
-		instance.activity = a;
+	public void setActivity(Activity a) {
+		activity = a;
 	}
 	
 	public int getTotal() {

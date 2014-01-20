@@ -33,7 +33,7 @@ public class TargetPracticeFragment extends Fragment {
 	private final Button [] buttons = new Button[BUTTON_COUNT];
 	
 	private FragmentActivity context;
-	private final TargetPracticeLogic logic = TargetPracticeLogic.getInstance();
+	private TargetPracticeLogic logic;
 	
 	public TargetPracticeFragment() {
 	}
@@ -43,6 +43,7 @@ public class TargetPracticeFragment extends Fragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View rootView = null;
 		context = getActivity();
+		logic = ((TargetPracticeActivity)context).getLogic();
 		int current = context.getActionBar().getSelectedNavigationIndex();
 		switch (current) {
 		case 0: // INPUT
@@ -59,13 +60,13 @@ public class TargetPracticeFragment extends Fragment {
 			final LinearLayout seriesLayout = (LinearLayout)rootView.findViewById(R.id.seriesInternalLayout);
 			for (Integer value : logic.getCurrentSeries())
 				seriesLayout.addView(TargetPracticeUtils.buttonFromLabel(value.toString(), context));
-			Log.d(LOG_TAG, "Adding "+logic.getCurrentSeries().size()+" elements to series ");
+			Log.v(LOG_TAG, "Adding "+logic.getCurrentSeries().size()+" elements to series ");
 			
 			// training results field
 			LinearLayout trainingLayout = (LinearLayout)rootView.findViewById(R.id.resultsInternalLayout);
 			for (Integer value : logic.getCurrentTraining())
 				trainingLayout.addView(TargetPracticeUtils.buttonFromLabel(value.toString(), context));
-			Log.d(LOG_TAG, "Adding "+logic.getCurrentTraining().size()+" elements to training");
+			Log.v(LOG_TAG, "Adding "+logic.getCurrentTraining().size()+" elements to training");
 			
 			for (int i=0; i < BUTTON_COUNT; i++) {
 				buttons[i] = new Button(context);
@@ -75,7 +76,7 @@ public class TargetPracticeFragment extends Fragment {
 					@Override
 					public void onClick(View v) {
 						CharSequence value = ((Button)v).getText();
-						Log.d(LOG_TAG, "button "+value+" clicked");
+						Log.v(LOG_TAG, "button "+value+" clicked");
 						seriesLayout.addView(TargetPracticeUtils.buttonFromLabel(value, context));
 						logic.hit(value);
 					}
@@ -126,12 +127,5 @@ public class TargetPracticeFragment extends Fragment {
 		}
 		
 		return rootView;
-	}
-	
-	@Override
-	public void onPause() {
-		// preserve results (if any)
-		super.onPause();
-		Log.d(LOG_TAG, "PAUSED");
 	}
 }

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class TargetPracticeActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
+	static final String KEY_LOGIC = "Logic"; 
 	
 	private static final String LOG_TAG = "TP-Main";
 	/**
@@ -24,13 +25,16 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 	 */
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	
-	private final TargetPracticeLogic logic = TargetPracticeLogic.getInstance(this);
+	private TargetPracticeLogic logic;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tp_main);
-
+		if(savedInstanceState != null && savedInstanceState.containsKey(KEY_LOGIC))
+			this.logic = (TargetPracticeLogic)savedInstanceState.getSerializable(KEY_LOGIC);
+		else logic = new TargetPracticeLogic(this);
+		
 		// Set up the action bar to show a dropdown list.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -58,6 +62,10 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 			getActionBar().setSelectedNavigationItem(
 					savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
 		}
+		
+		if (savedInstanceState.containsKey(KEY_LOGIC)) {
+			logic = (TargetPracticeLogic)savedInstanceState.getSerializable(KEY_LOGIC);
+		} else logic = new TargetPracticeLogic(this);
 	}
 
 	@Override
@@ -65,6 +73,8 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 		// Serialize the current dropdown position.
 		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
 				getActionBar().getSelectedNavigationIndex());
+		
+		outState.putSerializable(KEY_LOGIC, logic);
 	}
 
 	@Override
@@ -103,5 +113,8 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 		Toast.makeText(TargetPracticeActivity.this, getString(R.string.message_training_saved),
 				Toast.LENGTH_SHORT).show();
 	}
-
+	
+	TargetPracticeLogic getLogic() {
+		return logic;
+	}
 }
