@@ -1,7 +1,6 @@
 package eu.ammw.android.targetpractice;
 
-import eu.ammw.android.targetpractice.util.TargetPracticeLogic;
-import eu.ammw.android.targetpractice.util.TargetPracticeUtils;
+import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,6 +18,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import eu.ammw.android.targetpractice.util.TargetPracticeLogic;
+import eu.ammw.android.targetpractice.util.TargetPracticeUtils;
 
 /**
  * A fragment representing a section of the app.
@@ -47,6 +48,7 @@ public class TargetPracticeFragment extends Fragment {
 			((LinearLayout)(getActivity().findViewById(R.id.seriesInternalLayout))).addView(butt);
 			logic.hit(value);
 			((HorizontalScrollView)getActivity().findViewById(R.id.seriesScrollView)).fullScroll(View.FOCUS_RIGHT);
+			setBothButtons(getActivity());
 		}
 	};
 	
@@ -126,6 +128,7 @@ public class TargetPracticeFragment extends Fragment {
 				}
 			};
 			grid.setAdapter(adapter);
+			setBothButtons(rootView);
 			break;
 			
 		case 1: // HISTORY
@@ -138,5 +141,15 @@ public class TargetPracticeFragment extends Fragment {
 		}
 		
 		return rootView;
+	}
+	
+	private void setBothButtons(Activity a) {
+		a.findViewById(R.id.finishButton).setEnabled(logic.canSubmitTraining());
+		a.findViewById(R.id.seriesButton).setEnabled(logic.canSubmitSeries());
+	}
+	
+	private void setBothButtons(View a) {
+		a.findViewById(R.id.finishButton).setEnabled(logic.canSubmitTraining());
+		a.findViewById(R.id.seriesButton).setEnabled(logic.canSubmitSeries());
 	}
 }

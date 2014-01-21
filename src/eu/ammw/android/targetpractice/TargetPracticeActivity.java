@@ -46,6 +46,7 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 				butt.setOnLongClickListener(hitListener);
 				seriesLayout.addView(butt);
 			}
+			findViewById(R.id.seriesButton).setEnabled(true);
 			return true;
 		}
 	};
@@ -59,6 +60,11 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 			int index = parent.indexOfChild(v);
 			logic.remove(index, false);
 			parent.removeView(v);
+			if (!logic.canSubmitSeries()) {
+				findViewById(R.id.seriesButton).setEnabled(false);
+				if(!logic.canSubmitTraining())
+					findViewById(R.id.finishButton).setEnabled(false);
+			}
 			return true;
 		}
 	};
@@ -134,24 +140,28 @@ public class TargetPracticeActivity extends FragmentActivity implements ActionBa
 	
 	public void onInputSeriesButtonClicked(View view) {
 		Log.d(LOG_TAG, "series button clicked");
+		if (!logic.canSubmitSeries()) return;
 		final int sum = logic.endSeries();
-		if (sum < 0) return;
 		((TextView)findViewById(R.id.scoreTotalValueView)).setText(String.valueOf(logic.getTotal()));
 		((LinearLayout)findViewById(R.id.seriesInternalLayout)).removeAllViews();
 		Button butt = TargetPracticeUtils.buttonFromLabel(String.valueOf(sum), this);
 		butt.setOnLongClickListener(recordListener);
 		((LinearLayout)findViewById(R.id.resultsInternalLayout)).addView(butt);
 		((HorizontalScrollView)findViewById(R.id.resultsScrollView)).fullScroll(View.FOCUS_RIGHT);
+		findViewById(R.id.seriesButton).setEnabled(false);
 	}
 	
 	public void onInputFinishButtonClicked(View view) {
 		Log.d(LOG_TAG, "end training button clicked");
+		if (!logic.canSubmitTraining()) return;
 		logic.finishTraining();
 		((TextView)findViewById(R.id.scoreTotalValueView)).setText(R.string.zero);
 		((LinearLayout)findViewById(R.id.seriesInternalLayout)).removeAllViews();
 		((LinearLayout)findViewById(R.id.resultsInternalLayout)).removeAllViews();
 		Toast.makeText(TargetPracticeActivity.this, getString(R.string.message_training_saved),
 				Toast.LENGTH_SHORT).show();
+		findViewById(R.id.finishButton).setEnabled(false);
+		findViewById(R.id.seriesButton).setEnabled(false);
 	}
 	
 	TargetPracticeLogic getLogic() {

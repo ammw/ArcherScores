@@ -69,7 +69,6 @@ public class TargetPracticeLogic implements Serializable {
 	}
 	
 	public int endSeries() {
-		if (currentSeries.isEmpty()) return -1;
 		results.add(currentSeries);
 		int sum = 0;
 		for (int val : currentSeries) 
@@ -92,10 +91,11 @@ public class TargetPracticeLogic implements Serializable {
 			HistoryDatabaseHelper dbHelper = new HistoryDatabaseHelper(activity);
 			dbHelper.saveTraining(date, endTime, results);
 			dbHelper.close();
-			
+			/*
 			if (history != null)
 				history.add(0, String.format(activity.getString(R.string.format_history), 
 						date.format(activity.getString(R.string.format_date)), totalScore));
+			 */
 		}
 		
 		totalScore = 0;
@@ -108,7 +108,6 @@ public class TargetPracticeLogic implements Serializable {
 	public void remove(int index, boolean compound) {
 		Log.v(LOG_TAG, "Removing "+ (compound? "record" : "hit") +" at @"+index);
 		if (compound) {
-			//if (!currentSeries.isEmpty()) endSeries();
 			totalScore -= currentTraining.get(index);
 			currentTraining.remove(index);
 			// Load series
@@ -116,5 +115,13 @@ public class TargetPracticeLogic implements Serializable {
 			results.remove(index);
 		}
 		else currentSeries.remove(index);
+	}
+	
+	public boolean canSubmitSeries() {
+		return (currentSeries!=null && !currentSeries.isEmpty());
+	}
+	
+	public boolean canSubmitTraining() {
+		return canSubmitSeries() || !currentTraining.isEmpty();
 	}
 }
