@@ -7,12 +7,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
-import android.text.format.Time;
 import android.util.Log;
 import eu.ammw.android.targetpractice.R;
 
 public class TargetPracticeLogic implements Serializable {
-	private static final long serialVersionUID = 1972542623306334288L;
+	private static final long serialVersionUID = -443043325883246143L;
 
 	private transient Activity activity = null;
 	
@@ -23,11 +22,11 @@ public class TargetPracticeLogic implements Serializable {
 	private List<String> history = null;
 	private List<List<Integer>> results = new LinkedList<List<Integer>>();
 	private int totalScore = 0;
-	private Time date = new Time(Time.getCurrentTimezone());
+	private long date;
 	
 	public TargetPracticeLogic(Activity a) {
 		Log.i(LOG_TAG, "Logic created!");
-		date.setToNow();
+		date =System.currentTimeMillis();
 		this.activity = a;
 	}
 	
@@ -86,8 +85,7 @@ public class TargetPracticeLogic implements Serializable {
 				totalScore += val;
 		}
 		if (results.size() > 0) {
-			Time endTime = new Time(Time.getCurrentTimezone());
-			endTime.setToNow();
+			long endTime = System.currentTimeMillis();
 			HistoryDatabaseHelper dbHelper = new HistoryDatabaseHelper(activity);
 			dbHelper.saveTraining(date, endTime, results);
 			dbHelper.close();
@@ -102,7 +100,7 @@ public class TargetPracticeLogic implements Serializable {
 		currentSeries = new ArrayList<Integer>();
 		currentTraining.clear();
 		results.clear();
-		date.setToNow();
+		date = System.currentTimeMillis();
 	}
 	
 	public void remove(int index, boolean compound) {

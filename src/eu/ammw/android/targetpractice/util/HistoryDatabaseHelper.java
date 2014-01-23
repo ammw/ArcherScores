@@ -8,7 +8,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.format.Time;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 public class HistoryDatabaseHelper extends SQLiteOpenHelper {
@@ -21,13 +21,13 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
 	public static final String DB_RESULT_TABLE_NAME = "Score";
 	public static final String [] DB_RESULT_COL_NAMES = 
 		{"_id", "TrainingID", "Series", "Score"};
-	private static final int DB_VERSION = 1;
+	private static final int DB_VERSION = 2;
 	
 	private static final String QUERY_CREATE_TRAINING = 
 			"CREATE TABLE IF NOT EXISTS " + DB_TRAINING_TABLE_NAME + " (" +
 			DB_TRAINING_COL_NAMES[0] + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-			DB_TRAINING_COL_NAMES[1] + " TEXT NOT NULL, " +
-			DB_TRAINING_COL_NAMES[2] + " TEXT NOT NULL, " +
+			DB_TRAINING_COL_NAMES[1] + " INTEGER NOT NULL, " +
+			DB_TRAINING_COL_NAMES[2] + " INTEGER NOT NULL, " +
 			DB_TRAINING_COL_NAMES[3] + " TEXT " + ");";
 	
 	private static final String QUERY_CREATE_RESULT =
@@ -63,7 +63,10 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		throw new UnsupportedOperationException("Database upgrade not implemented!");
+		Log.w(LOG_TAG, "Upgrading database from version "+oldVersion+" to "+newVersion);
+		db.execSQL("DROP TABLE IF EXISTS "+DB_RESULT_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS "+DB_TRAINING_TABLE_NAME);
+		onCreate(db);
 	}
 	
 	/**
@@ -79,9 +82,8 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
 		
 		Cursor cursor = db.rawQuery(QUERY_RETRIEVE_HISTORY, null);
 		while (cursor.moveToNext()) {
-			Time t = new Time();
-			t.parse(cursor.getString(0));
-			history.add(String.format(historyFormat, t.format(dateFormat), cursor.getInt(1)));
+			history.add(String.format(historyFormat, 
+					DateFormat.format(dateFormat, cursor.getLong(0)), cursor.getInt(1)));
 		}
 		cursor.close();
 		db.close();
@@ -97,11 +99,11 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
 	 * 
 	 * @return			Row number of the inserted training.
 	 */
-	public long saveTraining(Time startTime, Time endTime, List<List<Integer>> results) {
+	public long saveTraining(long startTime, long endTime, List<List<Integer>> results) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues vals = new ContentValues();
-		vals.put(DB_TRAINING_COL_NAMES[1], startTime.format2445());
-		vals.put(DB_TRAINING_COL_NAMES[2], endTime.format2445());
+		vals.put(DB_TRAINING_COL_NAMES[1], startTime);
+		vals.put(DB_TRAINING_COL_NAMES[2], endTime);
 		long id = db.insert(DB_TRAINING_TABLE_NAME, DB_TRAINING_COL_NAMES[3], vals);
 		Log.i(LOG_TAG, "Inserted training as row #"+id);
 		
